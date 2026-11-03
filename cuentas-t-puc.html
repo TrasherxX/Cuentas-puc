@@ -1,0 +1,271 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cuentas T · Partida doble · PUC Colombia</title>
+<style>
+:root{--bg:#f7f6f2;--sf:#fff;--tx:#1d2420;--mu:#66706a;--bd:#dcdad2;--ac:#0f6b4f;--ac2:#e3f1ea;--er:#b3261e;--db:#1a5fb4;--cr:#a8420a;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121615;--sf:#1b211f;--tx:#e8ece9;--mu:#9aa6a0;--bd:#2f3935;--ac:#4cc79b;--ac2:#1d3a2e;--er:#ff8a80;--db:#7fb2ff;--cr:#ffa36b;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#121615;--sf:#1b211f;--tx:#e8ece9;--mu:#9aa6a0;--bd:#2f3935;--ac:#4cc79b;--ac2:#1d3a2e;--er:#ff8a80;--db:#7fb2ff;--cr:#ffa36b;color-scheme:dark}
+*{box-sizing:border-box}html,body{margin:0}body{background:var(--bg);color:var(--tx);font:15px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif;padding:0 14px 40px}
+.w{max-width:1000px;margin:0 auto}h1{font-size:21px;margin:18px 0 2px}h2{font-size:16px;margin:0 0 10px}p.s{color:var(--mu);margin:0 0 12px;font-size:13px}
+nav{display:flex;gap:6px;overflow-x:auto;margin:12px 0;padding-bottom:4px}nav button{white-space:nowrap;border:1px solid var(--bd);background:var(--sf);color:var(--tx);padding:8px 13px;border-radius:20px;cursor:pointer;font:inherit}
+nav button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.c{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:12px}
+input,select,textarea{font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:8px;width:100%}
+.r{display:grid;grid-template-columns:3fr 1fr 1fr 32px;gap:6px;margin-bottom:6px}.g{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+button.b{background:var(--ac);color:#fff;border:0;border-radius:8px;padding:9px 14px;cursor:pointer;font:inherit}button.b:disabled{opacity:.4;cursor:not-allowed}
+button.l{background:none;border:1px solid var(--bd);color:var(--tx);border-radius:8px;padding:8px 12px;cursor:pointer;font:inherit}
+.x{background:none;border:0;color:var(--er);cursor:pointer;font-size:18px}
+.tot{display:flex;gap:16px;flex-wrap:wrap;margin:8px 0;font-variant-numeric:tabular-nums}.ok{color:var(--ac)}.no{color:var(--er)}
+.tw{overflow-x:auto}table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}th,td{padding:6px 8px;border-bottom:1px solid var(--bd);text-align:left;font-size:14px}td.n,th.n{text-align:right}
+.tg{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.t .h{font-weight:600;font-size:13px;text-align:center;border-bottom:2px solid var(--tx);padding-bottom:5px}.t .h small{display:block;color:var(--mu);font-weight:400}
+.t .cols{display:grid;grid-template-columns:1fr 1fr;min-height:60px}.t .cols>div{padding:6px;font-size:13px;display:flex;flex-direction:column;gap:2px}.t .cols>div:first-child{border-right:2px solid var(--tx)}
+.t .cols span{display:flex;justify-content:space-between;gap:6px}.t .cols i{color:var(--mu);font-style:normal}
+.t .f{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--tx);font-weight:600;font-size:13px;text-align:center;padding-top:4px}
+.sd{text-align:center;margin-top:6px;font-size:13px;font-weight:600}.d{color:var(--db)}.k{color:var(--cr)}
+.as{border:1px solid var(--bd);border-radius:10px;padding:10px;margin-bottom:8px}.as header{display:flex;justify-content:space-between;gap:8px;font-size:13px}
+.m{color:var(--mu);font-size:12.5px}.pm{display:grid;grid-template-columns:1fr 110px;gap:8px;align-items:center;margin-bottom:6px}
+</style></head><body><div class="w">
+<h1>Cuentas T con partida doble</h1>
+<p class="s">PUC comercial colombiano · parámetros 2026 editables · todo se guarda en tu navegador</p>
+<nav id="nav"></nav>
+
+<section id="v-dia">
+<div class="c"><h2>🤖 Resolver un ejercicio con IA</h2>
+<p class="s">Escribe el problema con tus palabras. La app propone las cuentas con su código PUC, indica si va en débito o crédito, calcula IVA y retenciones y te explica por qué.</p>
+<textarea id="pq" rows="4" placeholder="Ej.: Compré mercancía por $5.000.000 más IVA, a crédito, y me practicaron retención en la fuente por compras."></textarea>
+<div style="margin-top:8px"><button class="b" id="ia">Resolver</button> <span id="ias" class="m"></span></div>
+<div id="iar" style="margin-top:10px"></div></div>
+<div class="c"><h2>Nuevo asiento contable</h2>
+<div class="g" style="margin-bottom:8px"><input type="date" id="fe"><input id="de" placeholder="Descripción (ej. Compra de mercancía)" style="grid-column:span 2"></div>
+<div class="m" style="margin-bottom:6px">Escribe el código o el nombre de la cuenta. Débitos = Créditos.</div>
+<div id="rows"></div>
+<button class="l" id="add">+ Agregar línea</button>
+<div class="tot"><span>Débitos: <b id="td">0</b></span><span>Créditos: <b id="tc">0</b></span><span id="eq"></span></div>
+<button class="b" id="sv" disabled>Guardar asiento</button> <span id="msg" class="m"></span></div>
+<div class="c"><h2>Libro diario</h2><div id="lib"></div></div>
+</section>
+
+<section id="v-t" hidden><div class="c"><h2>Cuentas T</h2><p class="s">Se arman solas desde el libro diario. Izquierda = débito, derecha = crédito.</p><select id="ft"></select></div><div class="tg" id="tg"></div></section>
+
+<section id="v-bal" hidden><div class="c"><h2>Balance de comprobación</h2><div class="tw" id="bal"></div></div><div class="c"><h2>Resumen de impuestos (IVA, retenciones, ICA, renta)</h2><div id="imp"></div></div><div class="c"><h2>Ecuación contable</h2><div id="ec"></div></div></section>
+
+<section id="v-pl" hidden><div class="c"><h2>Plantillas de asientos frecuentes</h2><p class="s">Calculan IVA, retenciones y aportes con los parámetros vigentes y los cargan al diario para que los revises.</p>
+<div class="g"><select id="pt"></select><input type="number" id="pb" placeholder="Valor base (sin IVA)" min="0"></div><br><button class="b" id="pg">Cargar en el diario</button></div><div class="c"><h2>Cierre de IVA del periodo</h2><p class="s">Toma el IVA generado, el IVA descontable y el IVA retenido de tu propio diario y arma el asiento de liquidación: IVA por pagar o saldo a favor.</p><button class="b" id="civ">Generar cierre de IVA</button> <span id="cim" class="m"></span></div></section>
+
+<section id="v-ley" hidden><div class="c"><h2>Leyes y parámetros (editables)</h2><div id="pr"></div><button class="l" id="rs">Restablecer valores</button></div>
+<div class="c"><h2>Marco normativo de referencia</h2><div class="m" style="font-size:13.5px;line-height:1.55">
+• <b>IVA general 19 %</b> y <b>renta de sociedades 35 %</b> (Estatuto Tributario; Ley 2277 de 2022).<br>
+• <b>UVT 2026: $52.374</b> (Resolución DIAN 000238 de 2025).<br>
+• <b>SMMLV 2026: $1.750.905</b> (Decreto 1469 de 2025) y <b>auxilio de transporte $249.095</b> (Decreto 1470 de 2025), para quienes ganan hasta 2 SMMLV.<br>
+• Marco contable: NIIF/NIF según grupo (Decreto 2420 de 2015 y modificatorios). El PUC (estructura del Decreto 2650 de 1993) se usa en la práctica como catálogo de referencia; las empresas lo adaptan a su grupo NIIF.<br>
+• Retención en la fuente: el Decreto 572 de 2025 fue suspendido parcialmente por el Consejo de Estado (auto del 7 de mayo de 2026). Por eso los porcentajes y bases de arriba son editables: confírmalos con la DIAN o tu contador.<br>
+• La emergencia económica de diciembre de 2025 fue declarada inexequible (Sentencia C-075 de 2026); sus cambios de IVA no rigen.<br>
+• Reteica: varía por municipio y actividad (consulta el Acuerdo de tu ciudad).<br><br>
+Herramienta de apoyo educativo y de trabajo; no reemplaza a un contador público.</div></div></section>
+
+<section id="v-cat" hidden><div class="c"><h2>Catálogo de cuentas PUC</h2><input id="q" placeholder="Buscar por código o nombre…"><div class="tw" style="margin-top:8px;max-height:380px;overflow:auto"><table id="ct"></table></div></div>
+<div class="c"><h2>Agregar cuenta propia</h2><div class="g"><input id="nc" placeholder="Código (ej. 13050501)"><input id="nn" placeholder="Nombre"><select id="nt"><option value="D">Naturaleza débito</option><option value="C">Naturaleza crédito</option></select></div><br><button class="b" id="na">Agregar</button></div></section>
+</div>
+<datalist id="dl"></datalist>
+<script>
+const $=s=>document.querySelector(s),R=Math.round,fmt=n=>Number(n).toLocaleString("es-CO",{maximumFractionDigits:0});
+const P0={iva:19,renta:35,uvt:52374,smmlv:1750905,aux:249095,rfC:2.5,bC:27,rfS:4,bS:4,rfH:11,eps:4,pen:4};
+const PL={iva:"IVA general (%)",renta:"Impuesto de renta sociedades (%)",uvt:"Valor UVT 2026 ($)",smmlv:"Salario mínimo 2026 ($)",aux:"Auxilio de transporte 2026 ($)",rfC:"Retefuente compras (%)",bC:"Base mínima compras (UVT)",rfS:"Retefuente servicios (%)",bS:"Base mínima servicios (UVT)",rfH:"Retefuente honorarios (%)",eps:"Aporte empleado salud (%)",pen:"Aporte empleado pensión (%)"};
+let S={as:[],cu:[],p:{}};
+try{Object.assign(S,JSON.parse(localStorage.getItem("ct1")||"{}"))}catch(e){}
+S.p=Object.assign({},P0,S.p);const save=()=>{try{localStorage.setItem("ct1",JSON.stringify(S))}catch(e){}};
+const PUC=`1105|Caja
+110505|Caja general
+110510|Cajas menores
+1110|Bancos
+111005|Moneda nacional
+1120|Cuentas de ahorro
+1305|Clientes
+130505|Clientes nacionales
+1330|Anticipos y avances
+133005|Anticipos a proveedores
+1355|Anticipo de impuestos y contribuciones o saldos a favor
+135515|Retención en la fuente a favor
+135517|Impuesto a las ventas retenido
+135518|Impuesto de industria y comercio retenido
+135505|Anticipo de impuesto de renta y complementarios
+135520|Sobrantes en liquidación privada de impuestos (IVA a favor)
+1380|Deudores varios
+1399|Provisiones deudores (cuentas por cobrar)
+1405|Materias primas
+1430|Productos terminados
+1435|Mercancías no fabricadas por la empresa
+1455|Materiales, repuestos y accesorios
+1504|Terrenos
+1516|Construcciones y edificaciones
+1520|Maquinaria y equipo
+1524|Equipo de oficina
+1528|Equipo de computación y comunicación
+1540|Flota y equipo de transporte
+1592|Depreciación acumulada
+1705|Gastos pagados por anticipado
+2105|Obligaciones financieras (bancos nacionales)
+2205|Proveedores nacionales
+2335|Costos y gastos por pagar
+2365|Retención en la fuente (por pagar)
+236505|Retención salarios y pagos laborales
+236515|Retención honorarios
+236525|Retención servicios
+236530|Retención arrendamientos
+236540|Retención compras
+236575|Autorretenciones
+2367|Impuesto a las ventas retenido (reteIVA)
+2368|Impuesto de industria y comercio retenido (reteICA)
+2370|Retenciones y aportes de nómina
+237005|Aportes a EPS
+237006|Aportes a ARL
+237010|Aportes ICBF, SENA y cajas de compensación
+2380|Acreedores varios
+238030|Fondos de cesantías y/o pensiones
+2404|Impuesto de renta y complementarios
+240405|Vigencia fiscal corriente (renta por pagar)
+2408|Impuesto sobre las ventas por pagar
+240801|IVA generado
+240802|IVA descontable
+2412|Impuesto de industria y comercio por pagar
+2505|Salarios por pagar
+2510|Cesantías consolidadas
+2515|Intereses sobre cesantías
+2520|Prima de servicios
+2525|Vacaciones consolidadas
+2805|Anticipos y avances recibidos de clientes
+3105|Capital suscrito y pagado
+3205|Prima en colocación de acciones
+3305|Reservas obligatorias
+3605|Utilidad del ejercicio
+3610|Pérdida del ejercicio
+3705|Utilidades acumuladas
+3710|Pérdidas acumuladas
+4120|Ingresos por industrias manufactureras
+4135|Comercio al por mayor y al por menor
+4155|Actividades inmobiliarias y de alquiler
+4175|Devoluciones, rebajas y descuentos en ventas
+4210|Ingresos financieros
+4250|Recuperaciones
+4295|Ingresos diversos
+5105|Gastos de personal (administración)
+510506|Sueldos
+510527|Auxilio de transporte
+510530|Cesantías
+510533|Intereses sobre cesantías
+510536|Prima de servicios
+510539|Vacaciones
+510569|Aportes a EPS
+510570|Aportes a fondos de pensiones
+5110|Honorarios
+5115|Impuestos (industria y comercio, predial)
+5120|Arrendamientos
+5135|Servicios (públicos, aseo, vigilancia, etc.)
+5140|Gastos legales
+5145|Mantenimiento y reparaciones
+5160|Depreciaciones
+5195|Gastos diversos
+5205|Gastos de personal (ventas)
+5305|Gastos financieros (bancarios e intereses)
+5405|Impuesto de renta y complementarios
+6135|Costo de ventas comercio al por mayor y menor
+7105|Materia prima (producción)
+7205|Mano de obra directa (producción)`.split("\n").map(l=>{const[c,n]=l.split("|");return{c,n}});
+const all=()=>PUC.concat(S.cu),find=c=>all().find(a=>a.c===c);
+const nm=c=>(find(c)||{}).n||"(cuenta no encontrada)";
+const nat=c=>{const a=find(c);if(a&&a.t)return a.t;const x={1592:"C",1399:"C",4175:"D",3710:"D",3610:"D"};for(const k in x)if(c.startsWith(k))return x[k];return"1567".includes(c[0])?"D":"C"};
+const cd=v=>(v||"").trim().split(/\s/)[0];
+const TABS=[["dia","Diario"],["t","Cuentas T"],["bal","Balance"],["pl","Plantillas"],["ley","Leyes y parámetros"],["cat","Catálogo PUC"]];
+$("#nav").innerHTML=TABS.map(t=>`<button data-t="${t[0]}">${t[1]}</button>`).join("");
+function tab(k){TABS.forEach(t=>{$("#v-"+t[0]).hidden=t[0]!=k});document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b.dataset.t==k));render()}
+$("#nav").onclick=e=>{if(e.target.dataset.t)tab(e.target.dataset.t)};
+$("#fe").valueAsDate=new Date();
+function dl(){$("#dl").innerHTML=all().sort((a,b)=>a.c.localeCompare(b.c)).map(a=>`<option value="${a.c} — ${a.n}">`).join("")}
+function row(c="",d="",h=""){const r=document.createElement("div");r.className="r";
+r.innerHTML=`<input list="dl" placeholder="Cuenta" value="${c}"><input type="number" min="0" step="any" placeholder="Débito" value="${d}"><input type="number" min="0" step="any" placeholder="Crédito" value="${h}"><button class="x" title="Quitar">×</button>`;
+r.oninput=calc;r.querySelector("button").onclick=()=>{r.remove();calc()};$("#rows").append(r)}
+function lines(){return[...$("#rows").children].map(r=>{const i=r.querySelectorAll("input");return{c:cd(i[0].value),d:+i[1].value||0,h:+i[2].value||0}}).filter(l=>l.c||l.d||l.h)}
+function calc(){const L=lines(),D=L.reduce((a,l)=>a+l.d,0),H=L.reduce((a,l)=>a+l.h,0);
+$("#td").textContent=fmt(D);$("#tc").textContent=fmt(H);
+const bad=L.some(l=>!find(l.c)||(l.d>0&&l.h>0)||(l.d==0&&l.h==0)),bal=Math.abs(D-H)<.5&&D>0;
+$("#eq").innerHTML=bal?'<b class="ok">✓ Cuadrado</b>':`<b class="no">Diferencia: ${fmt(Math.abs(D-H))}</b>`;
+$("#sv").disabled=!(bal&&!bad&&L.length>=2);
+$("#msg").textContent=bad&&L.length?"Revisa: cada línea necesita una cuenta válida y un solo valor (débito o crédito).":""}
+$("#add").onclick=()=>row();
+$("#sv").onclick=()=>{const L=lines();S.as.push({id:(S.as.at(-1)||{id:0}).id+1,f:$("#fe").value,de:$("#de").value||"Sin descripción",L});save();$("#rows").innerHTML="";row();row();$("#de").value="";calc();render()};
+function rLib(){$("#lib").innerHTML=S.as.length?[...S.as].reverse().map(a=>`<div class="as"><header><b>Asiento ${a.id} · ${a.f}</b><button class="x" data-del="${a.id}" title="Eliminar">×</button></header><div class="m">${a.de}</div><div class="tw"><table>${a.L.map(l=>`<tr><td>${l.c}</td><td>${nm(l.c)}</td><td class="n d">${l.d?fmt(l.d):""}</td><td class="n k">${l.h?fmt(l.h):""}</td></tr>`).join("")}</table></div></div>`).join(""):'<p class="m">Aún no hay asientos. Usa una plantilla o crea el primero arriba.</p>'}
+$("#lib").onclick=e=>{const i=e.target.dataset.del;if(i){S.as=S.as.filter(a=>a.id!=i);save();render()}};
+function agg(){const m={};S.as.forEach(a=>a.L.forEach(l=>{const x=m[l.c]||(m[l.c]={d:[],h:[],D:0,H:0});if(l.d){x.d.push([a.id,l.d]);x.D+=l.d}if(l.h){x.h.push([a.id,l.h]);x.H+=l.h}}));return m}
+function rT(){const m=agg(),ks=Object.keys(m).sort(),sel=$("#ft"),v=sel.value;
+sel.innerHTML='<option value="">Todas las cuentas</option>'+ks.map(k=>`<option value="${k}">${k} — ${nm(k)}</option>`).join("");sel.value=ks.includes(v)?v:"";
+const show=sel.value?[sel.value]:ks;
+$("#tg").innerHTML=show.length?show.map(k=>{const x=m[k],s=x.D-x.H,side=s>=0?"D":"C",cn=side!=nat(k)&&s!=0;
+return`<div class="c t"><div class="h">${nm(k)}<small>${k} · naturaleza ${nat(k)=="D"?"débito":"crédito"}</small></div><div class="cols"><div>${x.d.map(e=>`<span><i>#${e[0]}</i>${fmt(e[1])}</span>`).join("")}</div><div>${x.h.map(e=>`<span><i>#${e[0]}</i>${fmt(e[1])}</span>`).join("")}</div></div><div class="f"><span class="d">${fmt(x.D)}</span><span class="k">${fmt(x.H)}</span></div><div class="sd ${side=="D"?"d":"k"}">Saldo ${side=="D"?"deudor":"acreedor"}: ${fmt(Math.abs(s))}${cn?' <span class="no">(contra su naturaleza)</span>':""}</div></div>`}).join(""):'<p class="m">Registra asientos para ver tus cuentas T.</p>'}
+$("#ft").onchange=rT;
+function rBal(){const m=agg(),ks=Object.keys(m).sort();let A=0,B=0,C=0,E=0;const cl={};
+const rows=ks.map(k=>{const x=m[k],s=x.D-x.H;A+=x.D;B+=x.H;C+=s>0?s:0;E+=s<0?-s:0;cl[k[0]]=(cl[k[0]]||0)+s;return`<tr><td>${k}</td><td>${nm(k)}</td><td class="n">${fmt(x.D)}</td><td class="n">${fmt(x.H)}</td><td class="n">${s>0?fmt(s):""}</td><td class="n">${s<0?fmt(-s):""}</td></tr>`}).join("");
+$("#bal").innerHTML=`<table><tr><th>Código</th><th>Cuenta</th><th class="n">Débitos</th><th class="n">Créditos</th><th class="n">Saldo deudor</th><th class="n">Saldo acreedor</th></tr>${rows}<tr><th colspan="2">Totales</th><th class="n">${fmt(A)}</th><th class="n">${fmt(B)}</th><th class="n">${fmt(C)}</th><th class="n">${fmt(E)}</th></tr></table><p class="${Math.abs(A-B)<.5&&Math.abs(C-E)<.5?"ok":"no"}">${Math.abs(A-B)<.5&&Math.abs(C-E)<.5?"✓ Débitos y créditos cuadran":"Los totales no cuadran"}</p>`;
+const g=n=>cl[n]||0,act=g(1),pas=-g(2),pat=-g(3),ut=-g(4)-g(5)-g(6)-g(7);
+$("#ec").innerHTML=`<table><tr><td>Activo</td><td class="n">${fmt(act)}</td></tr><tr><td>Pasivo</td><td class="n">${fmt(pas)}</td></tr><tr><td>Patrimonio</td><td class="n">${fmt(pat)}</td></tr><tr><td>Utilidad (pérdida) del periodo = ingresos − gastos − costos</td><td class="n">${fmt(ut)}</td></tr><tr><th>Activo = Pasivo + Patrimonio + Utilidad</th><th class="n ${Math.abs(act-pas-pat-ut)<.5?"ok":"no"}">${Math.abs(act-pas-pat-ut)<.5?"✓ Se cumple":"No cuadra"}</th></tr></table>`}
+const T={
+compra:["Compra de mercancía a crédito (IVA descontable y retefuente)",b=>{const p=S.p,i=R(b*p.iva/100),r=b>=p.bC*p.uvt?R(b*p.rfC/100):0;return[["143505",b,0],["240802",i,0],["236540",0,r],["220505",0,b+i-r]]}],
+venta:["Venta de mercancía a crédito (IVA generado)",b=>{const i=R(b*S.p.iva/100);return[["130505",b+i,0],["4135",0,b],["240801",0,i]]}],
+costo:["Costo de la mercancía vendida (valor base = costo)",b=>[["6135",b,0],["1435",0,b]]],
+serv:["Gasto por servicios con IVA y retefuente",b=>{const p=S.p,i=R(b*p.iva/100),r=b>=p.bS*p.uvt?R(b*p.rfS/100):0;return[["5135",b,0],["240802",i,0],["236525",0,r],["2335",0,b+i-r]]}],
+hon:["Honorarios con retefuente (sin IVA)",b=>{const r=b>=S.p.bS*S.p.uvt?R(b*S.p.rfH/100):0;return[["5110",b,0],["236515",0,r],["2335",0,b-r]]}],
+nom:["Causación de nómina mensual (valor base = salario)",b=>{const p=S.p,x=b<=2*p.smmlv?p.aux:0,e=R(b*p.eps/100),n=R(b*p.pen/100);return[["510506",b,0],["510527",x,0],["237005",0,e],["238030",0,n],["2505",0,b+x-e-n]].filter(l=>l[1]||l[2])}],
+pagoP:["Pago a proveedores desde bancos",b=>[["220505",b,0],["111005",0,b]]],
+cobro:["Cobro a clientes en bancos",b=>[["111005",b,0],["130505",0,b]]],
+cap:["Aporte de capital de socios en bancos",b=>[["111005",b,0],["3105",0,b]]],
+renta:["Provisión impuesto de renta (valor base = utilidad antes de impuestos)",b=>{const t=R(b*S.p.renta/100);return[["540505".slice(0,4),t,0],["240405",0,t]]}]};
+$("#pt").innerHTML=Object.keys(T).map(k=>`<option value="${k}">${T[k][0]}</option>`).join("");
+$("#pg").onclick=()=>{const b=+$("#pb").value;if(!(b>0)){$("#pb").focus();return}const k=$("#pt").value;$("#rows").innerHTML="";T[k][1](b).forEach(l=>row(l[0]+" — "+nm(l[0]),l[1]||"",l[2]||""));$("#de").value=T[k][0].split(" (")[0];tab("dia");calc();window.scrollTo(0,0)};
+function rLey(){$("#pr").innerHTML=Object.keys(PL).map(k=>`<div class="pm"><label>${PL[k]}</label><input type="number" step="any" data-k="${k}" value="${S.p[k]}"></div>`).join("")}
+$("#pr").oninput=e=>{S.p[e.target.dataset.k]=+e.target.value;save()};
+$("#rs").onclick=()=>{S.p={...P0};save();rLey()};
+function rCat(){const q=$("#q").value.toLowerCase();$("#ct").innerHTML=all().filter(a=>(a.c+" "+a.n).toLowerCase().includes(q)).sort((a,b)=>a.c.localeCompare(b.c)).map(a=>`<tr><td>${a.c}</td><td>${a.n}</td><td>${nat(a.c)=="D"?"Débito":"Crédito"}</td></tr>`).join("")}
+$("#q").oninput=rCat;
+$("#na").onclick=()=>{const c=$("#nc").value.trim(),n=$("#nn").value.trim();if(!/^\d{4,10}$/.test(c)||!n||find(c))return;S.cu.push({c,n,t:$("#nt").value});save();$("#nc").value=$("#nn").value="";render()};
+function sal(m,p,sg){let s=0;for(const k in m)if(k.startsWith(p))s+=(m[k].H-m[k].D)*sg;return R(s)}
+function rImp(){const m=agg(),g=sal(m,"240801",1),d=sal(m,"240802",-1),n=g-d,rows=[["IVA generado (ventas) · 240801",g],["IVA descontable (compras) · 240802",d],["IVA neto "+(n>=0?"a pagar":"a favor"),Math.abs(n)],["Retención en la fuente por pagar · 2365",sal(m,"2365",1)],["ReteIVA por pagar · 2367",sal(m,"2367",1)],["ReteICA por pagar · 2368",sal(m,"2368",1)],["ICA por pagar · 2412",sal(m,"2412",1)],["Renta por pagar · 2404",sal(m,"2404",1)],["Retenciones y anticipos a favor · 1355",sal(m,"1355",-1)]];$("#imp").innerHTML=`<table>${rows.map(r=>`<tr><td>${r[0]}</td><td class="n">${fmt(r[1])}</td></tr>`).join("")}</table>`}
+$("#civ").onclick=()=>{const m=agg(),g=sal(m,"240801",1),d=sal(m,"240802",-1),r=sal(m,"135517",-1);if(g<=0&&d<=0){$("#cim").textContent="Aún no hay IVA en tu diario. Registra primero compras y ventas con IVA.";return}const n=g-d-r,L=[["240801",g,0],["240802",0,d],["135517",0,r]];if(n>=0)L.push(["2408",0,n]);else L.push(["135520",-n,0]);$("#rows").innerHTML="";L.filter(l=>l[1]||l[2]).forEach(l=>row(l[0]+" — "+nm(l[0]),l[1]||"",l[2]||""));$("#de").value="Liquidación de IVA del periodo";$("#cim").textContent="";tab("dia");calc()};
+function render(){dl();rLib();rT();rBal();rImp();rLey();rCat()}
+const esc=t=>String(t==null?"":t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let SM=null,RES=[];
+if(window.claude)claude.use("sample").then(x=>{SM=x;if(!x){$("#ia").disabled=true;$("#ias").textContent="La IA funciona al abrir la app dentro de Claude."}}).catch(()=>{});
+else{$("#ia").disabled=true;$("#ias").textContent="La IA funciona al abrir la app dentro de Claude."}
+const ens=l=>{if(!find(l.c)){S.cu.push({c:l.c,n:l.n||"Cuenta "+l.c});dl()}};
+function norm(r){return(r.asientos||[]).map(a=>{const L=(a.lineas||[]).map(l=>({c:String(l.codigo||"").trim(),n:l.cuenta,d:R(+l.debito||0),h:R(+l.credito||0),m:l.motivo||""})).filter(l=>l.c&&(l.d||l.h));const D=L.reduce((x,l)=>x+l.d,0),H=L.reduce((x,l)=>x+l.h,0);return{de:a.descripcion||"Asiento",ex:a.explicacion||"",L,D,H,ok:L.length>=2&&D>0&&D==H&&L.every(l=>!(l.d&&l.h))}})}
+function rIA(sup){$("#iar").innerHTML=RES.map((a,i)=>`<div class="as"><header><b>${esc(a.de)}</b><b class="${a.ok?"ok":"no"}">${a.ok?"✓ Cuadrado":"No cuadra: revisa"}</b></header><div class="tw"><table><tr><th>Código</th><th>Cuenta</th><th class="n">Débito</th><th class="n">Crédito</th></tr>${a.L.map(l=>`<tr><td>${esc(l.c)}</td><td>${esc(find(l.c)?nm(l.c):l.n)}<div class="m">${esc(l.m)}</div></td><td class="n d">${l.d?fmt(l.d):""}</td><td class="n k">${l.h?fmt(l.h):""}</td></tr>`).join("")}<tr><th colspan="2">Totales</th><th class="n">${fmt(a.D)}</th><th class="n">${fmt(a.H)}</th></tr></table></div><p class="m">${esc(a.ex)}</p><button class="b" data-g="${i}" ${a.ok?"":"disabled"}>Guardar en el diario</button> <button class="l" data-e="${i}">Editar antes de guardar</button></div>`).join("")+((sup||[]).length?`<div class="m"><b>Supuestos:</b> ${sup.map(esc).join(" · ")}</div>`:"")}
+$("#iar").onclick=e=>{const g=e.target.dataset.g,ed=e.target.dataset.e,i=g!=null?g:ed;if(i==null)return;const a=RES[i];a.L.forEach(ens);
+if(g!=null){S.as.push({id:(S.as.at(-1)||{id:0}).id+1,f:$("#fe").value,de:a.de,L:a.L.map(l=>({c:l.c,d:l.d,h:l.h}))});save();e.target.disabled=true;e.target.textContent="✓ Guardado";render()}
+else{$("#rows").innerHTML="";a.L.forEach(l=>row(l.c+" — "+nm(l.c),l.d||"",l.h||""));$("#de").value=a.de;calc();$("#de").scrollIntoView({behavior:"smooth",block:"center"})}};
+$("#ia").onclick=async()=>{const q=$("#pq").value.trim();if(!q||!SM)return;const b=$("#ia"),p=S.p;b.disabled=true;$("#ias").textContent="Analizando el ejercicio… puede tardar unos segundos";$("#iar").innerHTML="";
+const cat=all().map(a=>a.c+"|"+a.n).join("\n");
+const pr=`Eres un contador público colombiano experto en el PUC y en contabilidad por partida doble. Resuelve el ejercicio y devuelve SOLO un JSON válido, sin texto adicional ni markdown.
+
+EJERCICIO:
+${q}
+
+PARÁMETROS VIGENTES 2026 (úsalos para calcular): IVA ${p.iva}%, renta sociedades ${p.renta}%, UVT $${p.uvt}, salario mínimo $${p.smmlv}, auxilio de transporte $${p.aux}, retefuente compras ${p.rfC}% (base mínima ${p.bC} UVT), servicios ${p.rfS}% (base mínima ${p.bS} UVT), honorarios ${p.rfH}% (base mínima ${p.bS} UVT), aporte empleado salud ${p.eps}% y pensión ${p.pen}%.
+
+REGLAS:
+- Aplica partida doble: la suma de débitos debe ser IGUAL a la suma de créditos en cada asiento. Montos en pesos colombianos, enteros.
+- Cada línea tiene un solo valor: débito o crédito (el otro en 0).
+- Usa de preferencia los códigos del catálogo; si necesitas una cuenta que no está, usa el código PUC correcto de 4 a 6 dígitos con su nombre oficial.
+- Aplica IVA y retenciones solo si el enunciado lo indica o lo hace evidente; si las aplicas por una suposición, decláralo en supuestos. Si el ejercicio da valores de IVA o retención, usa esos.
+- IVA: en ventas va en 240801 IVA generado (crédito). En compras va en 240802 IVA descontable (débito) si es descontable; si no lo es, se suma al mayor valor del gasto o del activo. El IVA que te retienen es 135517 (débito) y el que tú retienes es 2367 (crédito). Retefuente que tú practicas: 2365 (crédito); la que te practican a ti: 135515 (débito). ReteICA: 2368 por pagar, 135518 a favor.
+- Si el ejercicio implica varios hechos, genera un asiento por hecho, en orden cronológico.
+- En "motivo" explica en pocas palabras por qué la cuenta va en débito o crédito (aumenta o disminuye, naturaleza).
+
+FORMATO:
+{"asientos":[{"descripcion":"","lineas":[{"codigo":"","cuenta":"","debito":0,"credito":0,"motivo":""}],"explicacion":""}],"supuestos":[""]}
+
+CATÁLOGO (código|nombre):
+${cat}`;
+try{const r=await SM.json(pr,{modelTier:"default"});RES=norm(r);if(!RES.length)throw{code:"vacio"};rIA(r.supuestos);$("#ias").textContent=""}
+catch(er){$("#ias").textContent=er.code=="not_granted"?"Necesitas permitir el uso de Claude para resolver con IA.":er.code=="rate_limited"?"Demasiadas solicitudes: espera un momento.":"No pude resolverlo. Reformula el ejercicio con más detalle e intenta de nuevo."}
+finally{b.disabled=false}};
+row();row();calc();tab("dia");
+</script></body></html>
